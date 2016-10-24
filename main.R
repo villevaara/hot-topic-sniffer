@@ -8,6 +8,9 @@ stopwords <- read.csv("data/stopwords.csv", header = FALSE)
 stopwords <- as.character(stopwords$V1)
 data_initial_subset <- data_initial[10000:20000, ]
 
+data_years1700_1710 <- subset(data_initial,
+                              publication_year >= 1700 &
+                                publication_year <= 1710)
 
 data_years1710_1720 <- subset(data_initial,
                               publication_year >= 1710 &
@@ -17,13 +20,40 @@ data_years1720_1730 <- subset(data_initial,
                               publication_year >= 1720 &
                                 publication_year <= 1730)
 
+data_years1730_1740 <- subset(data_initial,
+                              publication_year >= 1730 &
+                                publication_year <= 1740)
+
+data_years1740_1750 <- subset(data_initial,
+                              publication_year >= 1740 &
+                                publication_year <= 1750)
+
+data_years1750_1760 <- subset(data_initial,
+                              publication_year >= 1750 &
+                                publication_year <= 1760)
+
+data_years1760_1770 <- subset(data_initial,
+                              publication_year >= 1760 &
+                                publication_year <= 1770)
+
 data_years1700_1800 <- subset(data_initial,
                               publication_year >= 1700 &
                                 publication_year <= 1800)
 
+tokens1700_1710 <- tokenize_dataset_titles(data_years1700_1710, stopwords)
+
 tokens1710_1720 <- tokenize_dataset_titles(data_years1710_1720, stopwords)
 
 tokens1720_1730 <- tokenize_dataset_titles(data_years1720_1730, stopwords)
+
+tokens1730_1740 <- tokenize_dataset_titles(data_years1730_1740, stopwords)
+
+tokens1740_1750 <- tokenize_dataset_titles(data_years1740_1750, stopwords)
+
+tokens1750_1760 <- tokenize_dataset_titles(data_years1750_1760, stopwords)
+
+tokens1760_1770 <- tokenize_dataset_titles(data_years1760_1770, stopwords)
+
 
 tokens1700_1800 <- tokenize_dataset_titles(data_years1700_1800, stopwords)
 
@@ -80,6 +110,11 @@ get_difference_from_normal <- function (sample_token_set,
   return (difference_from_normal)
 }
 
+difference_1700_1710 <- get_difference_from_normal(tokens1700_1710,
+                                                   tokens1700_1800,
+                                                   cut_off_count = 100,
+                                                   save_csv = TRUE)
+
 difference_1710_1720 <- get_difference_from_normal(tokens1710_1720,
                                                    tokens1700_1800,
                                                    cut_off_count = 100,
@@ -89,6 +124,27 @@ difference_1720_1730 <- get_difference_from_normal(tokens1720_1730,
                                                    tokens1700_1800,
                                                    cut_off_count = 100,
                                                    save_csv = TRUE)
+
+difference_1730_1740 <- get_difference_from_normal(tokens1730_1740,
+                                                   tokens1700_1800,
+                                                   cut_off_count = 100,
+                                                   save_csv = TRUE)
+
+difference_1740_1750 <- get_difference_from_normal(tokens1740_1750,
+                                                   tokens1700_1800,
+                                                   cut_off_count = 100,
+                                                   save_csv = TRUE)
+
+difference_1750_1760 <- get_difference_from_normal(tokens1750_1760,
+                                                   tokens1700_1800,
+                                                   cut_off_count = 100,
+                                                   save_csv = TRUE)
+
+difference_1760_1770 <- get_difference_from_normal(tokens1760_1770,
+                                                   tokens1700_1800,
+                                                   cut_off_count = 100,
+                                                   save_csv = TRUE)
+
 
 
 # 

@@ -10,6 +10,14 @@ tokenize_list <- function (phraselist) {
   return(tokens)
 }
 
+tokenize_phrase_list <- function (phraselist) {
+  phraselist <- as.character(phraselist)
+  splitted <- strsplit(phraselist, " +")
+  # tokens <- unlist(splitted)
+  tokenized_phrases <- splitted
+  return(tokenized_phrases)
+}
+
 
 clean_tokens <- function(tokens, stopwords, stem = FALSE) {
   
