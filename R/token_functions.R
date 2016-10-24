@@ -1,5 +1,8 @@
 
 
+library(plyr)
+library(SnowballC)
+
 tokenize_list <- function (phraselist) {
   phraselist <- as.character(phraselist)
   splitted <- strsplit(phraselist, " +")
@@ -8,13 +11,20 @@ tokenize_list <- function (phraselist) {
 }
 
 
-clean_tokens <- function(tokens, stopwords) {
+clean_tokens <- function(tokens, stopwords, stem = FALSE) {
+  
   f1tokens <- subset(tokens, nchar(tokens) > 3)
   f2tokens <- gsub("\\W", "", f1tokens)
   f3tokens <- gsub("\\d", "", f2tokens)
   f4tokens <- subset(f3tokens, nchar(f3tokens) > 3)
   f5tokens <- tolower(f4tokens)
   f6tokens <- f5tokens[!(f5tokens %in% stopwords)]
+  
+  if (stem) {
+    snowballed_tokens <- SnowballC::wordStem(f6tokens, language = "english")
+    return (snowballed_tokens)
+  }
+  
   return (f6tokens)
 }
 
@@ -40,7 +50,7 @@ get_token_freqs <- function(token_counts) {
 tokenize_dataset_titles <- function(dataset, stopwords) {
   all_titles <- dataset$title
   tokens <- tokenize_list(all_titles)
-  cleaned_tokens <- clean_tokens(tokens, stopwords)
+  cleaned_tokens <- clean_tokens(tokens, stopwords, stem = TRUE)
   token_counts <- count_tokens(cleaned_tokens)
   token_freqs <- get_token_freqs(token_counts)
   return(token_freqs)

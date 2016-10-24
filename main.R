@@ -1,5 +1,4 @@
 
-library(plyr)
 # library(stringi)
 source("R/token_functions.R")
 
@@ -28,36 +27,68 @@ tokens1720_1730 <- tokenize_dataset_titles(data_years1720_1730, stopwords)
 
 tokens1700_1800 <- tokenize_dataset_titles(data_years1700_1800, stopwords)
 
-difference_from_normal <- tokens1720_1730
-# subset and discard anything with less than 30 hits
-# difference_from_normal <- subset(difference_from_normal,
-#                                  count >= 30)
+# difference_from_normal <- tokens1710_1720
+# 
+# difference_from_normal$general_frequency <-
+#   tokens1700_1800$frequency[match(difference_from_normal$token,
+#                                   tokens1700_1800$token)]
+# 
+# difference_from_normal$relative_frequency <- 
+#   difference_from_normal$frequency / difference_from_normal$general_frequency
+# 
+# difference_from_normal <- difference_from_normal[order(difference_from_normal$relative_frequency,
+#                              decreasing = TRUE), ]
+# 
 
-difference_from_normal$general_frequency <-
-  tokens1700_1800$frequency[match(difference_from_normal$token,
-                                  tokens1700_1800$token)]
-difference_from_normal$relative_frequency <- 
-  difference_from_normal$frequency / difference_from_normal$general_frequency
+get_difference_from_normal <- function (sample_token_set,
+                                        normal_token_set,
+                                        cut_off_count = NA,
+                                        save_csv = FALSE) {
+  
+  difference_from_normal <- sample_token_set
+  
+  difference_from_normal$general_frequency <-
+    normal_token_set$frequency[match(difference_from_normal$token,
+                                    normal_token_set$token)]
+  
+  difference_from_normal$relative_frequency <- 
+    difference_from_normal$frequency / difference_from_normal$general_frequency
+  
+  difference_from_normal <-
+    difference_from_normal[order(difference_from_normal$relative_frequency,
+                                 decreasing = TRUE), ]
+  
+  if (!is.na(cut_off_count)) {
+    difference_from_normal <- subset(difference_from_normal,
+                                     count >= 100)
+  }
+  
+  if (save_csv) {
+    sample_set_name <- deparse(substitute(sample_token_set))
+    normal_set_name <- deparse(substitute(normal_token_set))
+    date_and_time <- format(Sys.time(), "%Y-%m-%d %H:%M")
+    directory <- "output"
+    
+    filename <- paste(directory, "/", sample_set_name, "_",
+                      normal_set_name, "_", date_and_time, ".csv",
+                      sep = "", collapse = "")
+    
+    write.csv(difference_from_normal,
+              file = filename)
+  }
+  
+  return (difference_from_normal)
+}
 
-difference_from_normal <- difference_from_normal[order(difference_from_normal$relative_frequency,
-                             decreasing = TRUE), ]
+difference_1710_1720 <- get_difference_from_normal(tokens1710_1720,
+                                                   tokens1700_1800,
+                                                   cut_off_count = 100,
+                                                   save_csv = TRUE)
 
-
-# write.csv(difference_from_normal,
-#           file = "211016_1grams_estc_titles_1710-1720vs1700-1800_alpha.csv")
-
-
-# data_years1710_1720_southsea <-
-#   subset(data_years1710_1720,
-#          grepl("south.*sea", tolower(data_years1710_1720$title)))
-
-
-difference_from_normal100 <- subset(difference_from_normal,
-                                 count >= 100)
-
-write.csv(difference_from_normal100,
-          file = "211016_1grams_estc_titles_1720-1730vs1700-1800_min100.csv")
-
+difference_1720_1730 <- get_difference_from_normal(tokens1720_1730,
+                                                   tokens1700_1800,
+                                                   cut_off_count = 100,
+                                                   save_csv = TRUE)
 
 
 # 
